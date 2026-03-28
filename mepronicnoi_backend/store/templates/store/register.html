@@ -1,0 +1,76 @@
+{% extends 'store/base.html' %}
+{% block title %}สมัครสมาชิก — ME PRO NID NOI{% endblock %}
+
+{% block extra_css %}
+.auth-page { max-width: 480px; margin: 60px auto; padding: 0 24px 80px; }
+.auth-page h1 { font-size: 22px; font-weight: 300; letter-spacing: 3px; margin-bottom: 8px; text-align: center; }
+.auth-page p.sub { text-align: center; color: #888; font-size: 13px; margin-bottom: 36px; }
+.form-group { margin-bottom: 16px; }
+.form-group label { display: block; font-size: 11px; letter-spacing: 1px; color: #666; margin-bottom: 6px; }
+.form-input { width: 100%; border: 1px solid #ddd; padding: 11px 14px; font-family: inherit; font-size: 13px; outline: none; }
+.form-input:focus { border-color: #000; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.auth-btn { width: 100%; background: #000; color: #fff; border: none; padding: 15px; font-size: 12px; font-weight: 600; letter-spacing: 2px; cursor: pointer; margin-top: 8px; }
+.auth-btn:hover { background: #222; }
+.auth-link { text-align: center; margin-top: 20px; font-size: 13px; color: #666; }
+.auth-link a { color: #000; font-weight: 600; text-decoration: underline; }
+.errorlist { list-style: none; color: #e44; font-size: 11px; margin-top: 4px; }
+.help-text { font-size: 11px; color: #999; margin-top: 4px; }
+.divider { border: none; border-top: 1px solid #eee; margin: 28px 0; }
+{% endblock %}
+
+{% block content %}
+<div class="auth-page">
+    <h1>CREATE ACCOUNT</h1>
+    <p class="sub">สมัครสมาชิกเพื่อประสบการณ์การช้อปที่ดีกว่า</p>
+
+    <form method="POST">
+        {% csrf_token %}
+
+        <div class="form-group">
+            <label>ชื่อผู้ใช้ *</label>
+            {{ form.username }}
+            {% if form.username.errors %}<ul class="errorlist">{% for e in form.username.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+        </div>
+
+        <div class="form-row">
+            <div class="form-group">
+                <label>ชื่อ</label>
+                {{ form.first_name }}
+            </div>
+            <div class="form-group">
+                <label>นามสกุล</label>
+                {{ form.last_name }}
+            </div>
+        </div>
+
+        <div class="form-group">
+            <label>อีเมล *</label>
+            {{ form.email }}
+            {% if form.email.errors %}<ul class="errorlist">{% for e in form.email.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+        </div>
+
+        <div class="form-group">
+            <label>รหัสผ่าน *</label>
+            {{ form.password1 }}
+            {% if form.password1.errors %}<ul class="errorlist">{% for e in form.password1.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+            <p class="help-text">อย่างน้อย 8 ตัวอักษร ไม่ควรเป็นตัวเลขล้วน</p>
+        </div>
+
+        <div class="form-group">
+            <label>ยืนยันรหัสผ่าน *</label>
+            {{ form.password2 }}
+            {% if form.password2.errors %}<ul class="errorlist">{% for e in form.password2.errors %}<li>{{ e }}</li>{% endfor %}</ul>{% endif %}
+        </div>
+
+        {% if form.non_field_errors %}
+        <ul class="errorlist">{% for e in form.non_field_errors %}<li>{{ e }}</li>{% endfor %}</ul>
+        {% endif %}
+
+        <button type="submit" class="auth-btn">CREATE ACCOUNT</button>
+    </form>
+
+    <hr class="divider">
+    <p class="auth-link">มีบัญชีอยู่แล้ว? <a href="{% url 'login' %}">เข้าสู่ระบบ</a></p>
+</div>
+{% endblock %}

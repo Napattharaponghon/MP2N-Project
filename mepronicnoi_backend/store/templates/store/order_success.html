@@ -1,0 +1,103 @@
+{% extends 'store/base.html' %}
+{% block title %}สั่งซื้อสำเร็จ — ME PRO NID NOI{% endblock %}
+
+{% block extra_css %}
+.success-page {
+    max-width: 700px; margin: 0 auto;
+    padding: 80px 24px; text-align: center;
+}
+.success-icon { font-size: 56px; margin-bottom: 20px; }
+.success-page h1 { font-size: 26px; font-weight: 300; letter-spacing: 3px; margin-bottom: 8px; }
+.success-page p { color: #666; font-size: 14px; margin-bottom: 6px; }
+.order-id { font-size: 18px; font-weight: 700; letter-spacing: 2px; margin: 20px 0 32px; color: #000; }
+
+.order-detail-card { border: 1px solid #eee; padding: 28px; text-align: left; margin: 32px 0; }
+.order-detail-card h3 { font-size: 12px; font-weight: 600; letter-spacing: 2px; margin-bottom: 16px; }
+.detail-row { display: flex; justify-content: space-between; font-size: 13px; padding: 8px 0; border-bottom: 1px solid #f5f5f5; }
+.detail-row:last-child { border-bottom: none; }
+.detail-label { color: #888; }
+
+.order-items { border: 1px solid #eee; padding: 28px; text-align: left; margin-bottom: 32px; }
+.order-items h3 { font-size: 12px; font-weight: 600; letter-spacing: 2px; margin-bottom: 16px; }
+.order-item-row { display: flex; justify-content: space-between; font-size: 13px; padding: 8px 0; border-bottom: 1px solid #f5f5f5; }
+.order-item-row:last-child { border-bottom: none; }
+.order-total-row { display: flex; justify-content: space-between; font-size: 14px; font-weight: 700; margin-top: 12px; padding-top: 12px; border-top: 2px solid #000; }
+
+.action-btns { display: flex; gap: 16px; justify-content: center; flex-wrap: wrap; }
+.btn-primary { background: #000; color: #fff; padding: 14px 36px; font-size: 12px; font-weight: 600; letter-spacing: 2px; display: inline-block; }
+.btn-secondary { background: transparent; color: #000; border: 1px solid #000; padding: 13px 36px; font-size: 12px; letter-spacing: 2px; display: inline-block; }
+.btn-primary:hover { background: #222; color: #fff; }
+.btn-secondary:hover { background: #000; color: #fff; }
+
+.status-badge {
+    display: inline-block; padding: 4px 12px;
+    font-size: 11px; font-weight: 600; letter-spacing: 1px;
+    background: #fff3cd; color: #856404; border-radius: 20px;
+}
+{% endblock %}
+
+{% block content %}
+<div class="success-page">
+    <div class="success-icon">✅</div>
+    <h1>ORDER CONFIRMED</h1>
+    <p>ขอบคุณสำหรับการสั่งซื้อ!</p>
+    <p>เราจะดำเนินการจัดส่งให้โดยเร็วที่สุด</p>
+
+    <div class="order-id">ORDER #{{ order.id }}</div>
+
+    <!-- Order Details -->
+    <div class="order-detail-card">
+        <h3>DELIVERY INFORMATION</h3>
+        <div class="detail-row">
+            <span class="detail-label">ชื่อ-นามสกุล</span>
+            <span>{{ order.full_name }}</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">อีเมล</span>
+            <span>{{ order.email }}</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">เบอร์โทร</span>
+            <span>{{ order.phone }}</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">ที่อยู่</span>
+            <span style="text-align:right;max-width:60%">{{ order.address }}</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">สถานะ</span>
+            <span class="status-badge">{{ order.get_status_display }}</span>
+        </div>
+        <div class="detail-row">
+            <span class="detail-label">วันที่สั่งซื้อ</span>
+            <span>{{ order.created_at|date:"d M Y, H:i" }}</span>
+        </div>
+    </div>
+
+    <!-- Items -->
+    <div class="order-items">
+        <h3>ITEMS ORDERED</h3>
+        {% for item in order.items.all %}
+        <div class="order-item-row">
+            <span>{{ item.product_name }} (Size: {{ item.size }}) × {{ item.quantity }}</span>
+            <span>{{ item.formatted_subtotal }}</span>
+        </div>
+        {% endfor %}
+        <div class="order-total-row">
+            <span>TOTAL</span>
+            <span>{{ order.formatted_total }}</span>
+        </div>
+    </div>
+
+    {% if order.note %}
+    <p style="font-size:13px;color:#666;margin-bottom:24px;">หมายเหตุ: {{ order.note }}</p>
+    {% endif %}
+
+    <div class="action-btns">
+        <a href="{% url 'products' %}" class="btn-primary">CONTINUE SHOPPING</a>
+        {% if user.is_authenticated %}
+        <a href="{% url 'my_orders' %}" class="btn-secondary">MY ORDERS</a>
+        {% endif %}
+    </div>
+</div>
+{% endblock %}

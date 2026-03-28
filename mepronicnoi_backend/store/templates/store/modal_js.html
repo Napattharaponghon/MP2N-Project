@@ -1,0 +1,68 @@
+<script>
+let currentProductId = null;
+let selectedSize = null;
+
+async function openModal(productId) {
+    const res = await fetch(`/api/products/${productId}/`);
+    const p = await res.json();
+    currentProductId = productId;
+    selectedSize = null;
+
+    document.getElementById('modalBrand').textContent = p.brand;
+    document.getElementById('modalTitle').textContent = p.name;
+    document.getElementById('modalPrice').textContent = p.formatted_price;
+    document.getElementById('modalDesc').textContent = p.description;
+    document.getElementById('modalImg').src = p.image;
+    document.getElementById('product-qty').value = 1;
+
+    // Render size buttons
+    const sizeContainer = document.getElementById('sizeOptions');
+    sizeContainer.innerHTML = p.sizes.map(s => `
+        <button onclick="selectSize(this,'${s}')"
+            style="padding:8px 16px;border:1px solid #ddd;background:none;cursor:pointer;font-size:12px;font-weight:600;">${s}</button>
+    `).join('');
+    if (p.sizes.length) { selectSize(sizeContainer.children[0], p.sizes[0]); }
+
+    document.getElementById('productModal').style.display = 'block';
+    document.body.style.overflow = 'hidden';
+}
+
+function selectSize(btn, size) {
+    document.querySelectorAll('#sizeOptions button').forEach(b =>
+        b.style.cssText = 'padding:8px 16px;border:1px solid #ddd;background:none;cursor:pointer;font-size:12px;font-weight:600;');
+    btn.style.cssText = 'padding:8px 16px;border:1px solid #000;background:#000;color:#fff;cursor:pointer;font-size:12px;font-weight:600;';
+    selectedSize = size;
+}
+
+function closeModal() {
+    document.getElementById('productModal').style.display = 'none';
+    document.body.style.overflow = 'auto';
+}
+
+function changeQty(amount) {
+    const input = document.getElementById('product-qty');
+    const val = parseInt(input.value) + amount;
+    if (val >= 1) input.value = val;
+}
+
+async function addToCart() {
+    if (!selectedSize) { alert('กรุณาเลือกไซส์ก่อน'); return; }
+    const qty = parseInt(document.getElementById('product-qty').value);
+    const res = await fetch('/api/cart/add/', {
+        method: 'POST',
+        headers: {'Content-Type':'application/json','X-CSRFToken': CSRF},
+        body: JSON.stringify({product_id: currentProductId, size: selectedSize, qty})
+    });
+    const data = await res.json();
+    if (data.success) {
+        document.getElementById('cart-count').textContent = data.cart_count;
+        closeModal();
+        setTimeout(() => toggleCart(), 300);
+    }
+}
+
+// Close modal on backdrop click
+document.getElementById('productModal').addEventListener('click', function(e) {
+    if (e.target === this) closeModal();
+});
+</script>

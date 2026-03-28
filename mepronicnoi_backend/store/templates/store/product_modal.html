@@ -1,0 +1,31 @@
+<div id="productModal" style="display:none;position:fixed;inset:0;background:rgba(0,0,0,0.5);z-index:8000;overflow-y:auto;">
+    <div style="background:#fff;max-width:900px;margin:60px auto;padding:0;position:relative;">
+        <span onclick="closeModal()" style="position:absolute;top:16px;right:20px;font-size:24px;cursor:pointer;z-index:1">&times;</span>
+        <div style="display:grid;grid-template-columns:1fr 1fr;">
+            <img id="modalImg" src="" alt="" style="width:100%;aspect-ratio:1;object-fit:cover;">
+            <div style="padding:40px 32px;">
+                <h3 id="modalBrand" style="font-size:11px;letter-spacing:2px;color:#888;margin-bottom:8px;"></h3>
+                <h2 id="modalTitle" style="font-size:20px;font-weight:400;margin-bottom:8px;"></h2>
+                <p id="modalPrice" style="font-size:18px;font-weight:600;margin-bottom:12px;"></p>
+                <p id="modalDesc" style="font-size:13px;color:#555;line-height:1.6;margin-bottom:24px;"></p>
+
+                <div style="margin-bottom:20px;">
+                    <label style="font-size:11px;letter-spacing:2px;display:block;margin-bottom:8px;">SELECT SIZE</label>
+                    <div id="sizeOptions" style="display:flex;gap:8px;flex-wrap:wrap;"></div>
+                </div>
+
+                <div style="margin-bottom:24px;">
+                    <label style="font-size:11px;letter-spacing:2px;display:block;margin-bottom:8px;">QUANTITY</label>
+                    <div style="display:flex;align-items:center;border:1px solid #ddd;width:fit-content;">
+                        <button onclick="changeQty(-1)" style="padding:8px 14px;border:none;background:none;cursor:pointer;font-size:16px;">-</button>
+                        <input type="number" id="product-qty" value="1" min="1" readonly
+                               style="width:48px;text-align:center;border:none;font-size:14px;padding:8px 0;outline:none;">
+                        <button onclick="changeQty(1)" style="padding:8px 14px;border:none;background:none;cursor:pointer;font-size:16px;">+</button>
+                    </div>
+                </div>
+
+                <button onclick="addToCart()" style="width:100%;background:#000;color:#fff;border:none;padding:16px;font-size:12px;font-weight:600;letter-spacing:2px;cursor:pointer;">ADD TO BAG</button>
+            </div>
+        </div>
+    </div>
+</div>

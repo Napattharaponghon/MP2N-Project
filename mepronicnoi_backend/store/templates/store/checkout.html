@@ -1,0 +1,116 @@
+{% extends 'store/base.html' %}
+{% block title %}Checkout — ME PRO NID NOI{% endblock %}
+
+{% block extra_css %}
+.checkout-page { max-width: 1100px; margin: 0 auto; padding: 48px 24px; }
+.checkout-page h1 { font-size: 22px; font-weight: 300; letter-spacing: 3px; margin-bottom: 40px; }
+
+.checkout-grid { display: grid; grid-template-columns: 1fr 420px; gap: 60px; }
+@media (max-width: 800px) { .checkout-grid { grid-template-columns: 1fr; } }
+
+/* LEFT: Form */
+.form-section h2 { font-size: 12px; font-weight: 600; letter-spacing: 2px; margin-bottom: 20px; padding-bottom: 10px; border-bottom: 1px solid #eee; }
+.form-group { margin-bottom: 16px; }
+.form-group label { display: block; font-size: 11px; letter-spacing: 1px; color: #666; margin-bottom: 6px; }
+.form-input { width: 100%; border: 1px solid #ddd; padding: 11px 14px; font-family: inherit; font-size: 13px; outline: none; }
+.form-input:focus { border-color: #000; }
+textarea.form-input { resize: vertical; }
+.form-row { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+
+.errorlist { list-style: none; color: #e44; font-size: 11px; margin-top: 4px; }
+
+.submit-btn {
+    width: 100%; background: #000; color: #fff; border: none;
+    padding: 16px; font-size: 12px; font-weight: 600; letter-spacing: 2px;
+    cursor: pointer; margin-top: 8px;
+}
+.submit-btn:hover { background: #222; }
+
+/* RIGHT: Order Summary */
+.order-summary { background: #f9f9f9; padding: 28px; border: 1px solid #eee; }
+.order-summary h2 { font-size: 12px; font-weight: 600; letter-spacing: 2px; margin-bottom: 20px; }
+.summary-item { display: flex; gap: 14px; margin-bottom: 16px; padding-bottom: 16px; border-bottom: 1px solid #eee; }
+.summary-item img { width: 72px; height: 72px; object-fit: cover; }
+.summary-item-info { flex: 1; }
+.summary-item-info h4 { font-size: 12px; font-weight: 600; margin-bottom: 4px; }
+.summary-item-info p { font-size: 11px; color: #888; }
+.summary-item-price { font-size: 13px; font-weight: 600; white-space: nowrap; }
+.summary-total { display: flex; justify-content: space-between; font-size: 14px; font-weight: 700; margin-top: 16px; padding-top: 16px; border-top: 2px solid #000; }
+.summary-note { font-size: 11px; color: #888; margin-top: 12px; text-align: center; }
+{% endblock %}
+
+{% block content %}
+<div class="checkout-page">
+    <h1>CHECKOUT</h1>
+    <div class="checkout-grid">
+
+        <!-- Form -->
+        <div class="form-section">
+            <h2>SHIPPING INFORMATION</h2>
+            <form method="POST">
+                {% csrf_token %}
+                <div class="form-row">
+                    <div class="form-group">
+                        {{ form.full_name.label_tag }}
+                        {{ form.full_name }}
+                        {{ form.full_name.errors }}
+                    </div>
+                    <div class="form-group">
+                        {{ form.phone.label_tag }}
+                        {{ form.phone }}
+                        {{ form.phone.errors }}
+                    </div>
+                </div>
+                <div class="form-group">
+                    {{ form.email.label_tag }}
+                    {{ form.email }}
+                    {{ form.email.errors }}
+                </div>
+                <div class="form-group">
+                    {{ form.address.label_tag }}
+                    {{ form.address }}
+                    {{ form.address.errors }}
+                </div>
+                <div class="form-group">
+                    {{ form.note.label_tag }}
+                    {{ form.note }}
+                </div>
+
+                <h2 style="margin-top:28px;">PAYMENT METHOD</h2>
+                <div style="border:1px solid #ddd;padding:14px 16px;font-size:13px;background:#fff;display:flex;align-items:center;gap:10px;">
+                    <input type="radio" checked> <span>ชำระเงินปลายทาง (Cash on Delivery)</span>
+                </div>
+                <div style="border:1px solid #ddd;padding:14px 16px;font-size:13px;background:#fff;display:flex;align-items:center;gap:10px;margin-top:8px;opacity:.5">
+                    <input type="radio" disabled> <span>โอนเงินผ่านธนาคาร (เร็วๆ นี้)</span>
+                </div>
+
+                <button type="submit" class="submit-btn">PLACE ORDER</button>
+            </form>
+        </div>
+
+        <!-- Order Summary -->
+        <div>
+            <div class="order-summary">
+                <h2>ORDER SUMMARY</h2>
+                {% for item in cart %}
+                <div class="summary-item">
+                    <img src="{{ item.image }}" alt="{{ item.name }}"
+                         onerror="this.src='https://images.unsplash.com/photo-1608231387042-66d1773070a5?w=200'">
+                    <div class="summary-item-info">
+                        <h4>{{ item.name }}</h4>
+                        <p>Size: {{ item.size }} / Qty: {{ item.qty }}</p>
+                    </div>
+                    <div class="summary-item-price">{{ item.price|floatformat:0 }} ฿</div>
+                </div>
+                {% endfor %}
+                <div class="summary-total">
+                    <span>TOTAL</span>
+                    <span>{{ cart_total|floatformat:0 }} ฿</span>
+                </div>
+                <p class="summary-note">ราคารวม VAT แล้ว • จัดส่งภายใน 3–5 วันทำการ</p>
+            </div>
+        </div>
+
+    </div>
+</div>
+{% endblock %}

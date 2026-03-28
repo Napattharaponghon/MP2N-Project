@@ -1,0 +1,231 @@
+{% extends 'store/base.html' %}
+{% block title %}ME PRO NID NOI - Home{% endblock %}
+
+{% block extra_css %}
+<style>
+/* ล็อคขนาด Banner ให้เตี้ยลง */
+.banner-slider { 
+    position: relative; 
+    height: 55vh;          /* ปรับลดลงเหลือ 55% ของความสูงหน้าจอ */
+    min-height: 350px;     /* เพิ่มความสูงขั้นต่ำเล็กน้อยเพื่อให้สมดุลกับฟอนต์ที่ใหญ่ขึ้น */
+    max-height: 500px;     /* ปรับล็อคความสูงสูงสุดเพิ่มขึ้นเล็กน้อย */
+    overflow: hidden; 
+    background-color: #000;
+}
+
+.banner-slider img { 
+    width: 100%; 
+    height: 100%; 
+    object-fit: cover;     
+    object-position: center 30%; 
+}
+
+/* จัดวางข้อความกึ่งกลาง */
+.slide-content { 
+    position: absolute; 
+    top: 50%; 
+    left: 50%; 
+    transform: translate(-50%, -50%); 
+    color: #fff; 
+    text-align: center; 
+    width: 90%;
+    z-index: 2;
+}
+
+/* --- ปรับปรุง: เพิ่มขนาดหัวข้อให้ใหญ่และเด่นขึ้น --- */
+.slide-content h1 { 
+    font-size: clamp(28px, 6vw, 48px); /* ขยายขนาดใหญ่ขึ้น (เดิม max 32px) */
+    font-weight: 300; 
+    letter-spacing: 6px;             /* เพิ่มระยะห่างตัวอักษรให้ดู Luxury */
+    margin-bottom: 35px;             /* เพิ่มระยะห่างจากปุ่ม */
+    text-shadow: 0 2px 15px rgba(0,0,0,0.6); /* เพิ่มเงาให้ชัดเจนขึ้น */
+    line-height: 1.2;
+}
+
+/* --- ปรับปรุง: ปรับปุ่ม SHOP ให้เด่นและชัดเจนขึ้น --- */
+.shop-btn { 
+    display: inline-block; 
+    border: 2px solid #fff;          /* เพิ่มความหนาของเส้นขอบ */
+    color: #fff; 
+    padding: 14px 48px;              /* เพิ่มขนาดปุ่ม */
+    font-size: 14px;                 /* เพิ่มขนาดตัวอักษรในปุ่ม */
+    font-weight: 600;                /* ทำให้ตัวหนาขึ้น */
+    letter-spacing: 3px; 
+    text-decoration: none;
+    transition: all 0.3s ease;
+    background: transparent;
+}
+
+.shop-btn:hover { 
+    background: #fff; 
+    color: #000; 
+}
+
+/* เพิ่มความเข้มของ Overlay เพื่อให้ข้อความขาวเด่นชัด */
+.banner-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.4); /* เพิ่มความเข้มเป็น 0.4 */
+    z-index: 1;
+}
+
+/* ส่วนอื่นๆ คงเดิม */
+.luxury-slider-container { padding: 60px 24px; max-width: 1400px; margin: 0 auto; }
+.luxury-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 32px; }
+.section-title-large { font-size: 28px; font-weight: 300; letter-spacing: 2px; }
+.section-subtitle { font-size: 13px; color: #888; margin-top: 6px; }
+.luxury-controls { display: flex; gap: 12px; }
+.control-btn { background: none; border: 1px solid #ccc; width: 36px; height: 36px; font-size: 18px; cursor: pointer; }
+.control-btn:hover { border-color: #000; }
+.luxury-track-container { overflow: hidden; }
+.luxury-track { display: flex; gap: 20px; transition: transform 0.5s ease-in-out; list-style: none; padding: 0; }
+.luxury-slide { min-width: calc(25% - 15px); position: relative; }
+.luxury-slide img { width: 100%; aspect-ratio: 3/4; object-fit: cover; }
+.slide-details { padding: 12px 0; }
+.collection-brand { font-size: 10px; letter-spacing: 2px; color: #888; }
+.collection-name { font-size: 14px; margin: 4px 0; font-weight: 400; }
+.shop-now { font-size: 11px; letter-spacing: 1px; text-decoration: underline; color: #000; }
+
+.featured-section { padding: 40px 24px; max-width: 1400px; margin: 0 auto; }
+.featured-section h2 { font-size: 22px; font-weight: 300; letter-spacing: 3px; margin-bottom: 32px; }
+.product-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 24px; }
+.product-card { cursor: pointer; }
+.product-card img { width: 100%; aspect-ratio: 3/4; object-fit: cover; transition: opacity 0.3s; }
+.product-card:hover img { opacity: 0.85; }
+.product-card h3 { font-size: 11px; letter-spacing: 1px; margin-top: 10px; color: #888; }
+.product-card .product-name { font-size: 13px; font-weight: 400; margin: 4px 0; }
+.product-card .price { font-size: 13px; font-weight: 600; }
+</style>
+{% endblock %}
+
+{% block content %}
+<header class="banner-slider">
+    <div class="slide active" style="position:relative; height:100%;">
+        <div class="banner-overlay"></div>
+        <img src="https://images.unsplash.com/photo-1774112168823-63b5842067a1?q=80&w=1331&auto=format&fit=crop" alt="Hero">
+        <div class="slide-content">
+            <h1>L  E  S  S    I  S    L  U  X  U  R  Y</h1>
+            <a href="{% url 'products' %}" class="shop-btn">SHOP</a>
+        </div>
+    </div>
+</header>
+
+<section class="luxury-slider-container">
+    <div class="luxury-header">
+        <div class="luxury-title-group">
+            <h2 class="section-title-large">The World of Luxury</h2>
+            <p class="section-subtitle">Explore seasonal collections, iconic accessories, and more</p>
+        </div>
+        <div class="luxury-controls">
+            <button class="control-btn" id="luxury-prev">&lsaquo;</button>
+            <button class="control-btn" id="luxury-next">&rsaquo;</button>
+        </div>
+    </div>
+    <div class="luxury-track-container">
+        <ul class="luxury-track" id="luxury-track">
+            <li class="luxury-slide">
+                <img src="https://images.unsplash.com/photo-1512436991641-6745cdb1723f?q=80&w=1200&auto=format&fit=crop" alt="Spring 2026">
+                <div class="slide-details">
+                    <span class="collection-brand">ME PRO NID NOI COLLECTION</span>
+                    <h3 class="collection-name">Spring 2026</h3>
+                    <a href="{% url 'products' %}" class="shop-now">SHOP NOW</a>
+                </div>
+            </li>
+
+            <li class="luxury-slide">
+                <img src="https://images.unsplash.com/photo-1506152983158-b4a74a01c721?q=80&w=1200&auto=format&fit=crop" alt="Purple Label">
+                <div class="slide-details">
+                    <span class="collection-brand">ME PRO NID NOI PURPLE LABEL</span>
+                    <h3 class="collection-name">Spring 2026</h3>
+                    <a href="{% url 'products' %}" class="shop-now">SHOP NOW</a>
+                </div>
+            </li>
+
+            <li class="luxury-slide">
+                <img src="https://images.unsplash.com/photo-1616486338812-3dadae4b4ace?q=80&w=1200&auto=format&fit=crop" alt="Home">
+                <div class="slide-details">
+                    <span class="collection-brand">ME PRO NID NOI HOME</span>
+                    <h3 class="collection-name">Home Accents</h3>
+                    <a href="{% url 'products' %}" class="shop-now">SHOP NOW</a>
+                </div>
+            </li>
+
+            <li class="luxury-slide">
+                <img src="https://images.unsplash.com/photo-1549298916-b41d501d3772?q=80&w=1200&auto=format&fit=crop" alt="Footwear">
+                <div class="slide-details">
+                    <span class="collection-brand">ME PRO NID NOI FOOTWEAR</span>
+                    <h3 class="collection-name">Footwear 2026</h3>
+                    <a href="{% url 'products' %}" class="shop-now">SHOP NOW</a>
+                </div>
+            </li>
+
+            <li class="luxury-slide">
+                <img src="https://i.pinimg.com/736x/ff/3d/e2/ff3de21f355aa6bbe3029d286c94671d.jpg" alt="Accessories">
+                <div class="slide-details">
+                    <span class="collection-brand">ME PRO NID NOI FOOTWEAR</span>
+                    <h3 class="collection-name">Accessories 2026</h3>
+                    <a href="{% url 'products' %}" class="shop-now">SHOP NOW</a>
+                </div>
+            </li>
+        </ul>
+    </div>
+</section>
+
+<section class="featured-section">
+    <h2>FEATURED PRODUCTS</h2>
+    <div class="product-grid">
+        {% for product in featured_products %}
+        <div class="product-card" onclick="openModal('{{ product.id }}')">
+            <img src="{{ product.get_image }}" alt="{{ product.name }}">
+            <h3>{{ product.brand }}</h3>
+            <p class="product-name">{{ product.name }}</p>
+            <p class="price">{{ product.formatted_price }}</p>
+        </div>
+        {% empty %}
+        <p style="grid-column:1/-1;text-align:center;color:#888;padding:40px">
+            ยังไม่มีสินค้า — เพิ่มสินค้าในหน้า <a href="/admin/store/product/add/">Admin</a>
+        </p>
+        {% endfor %}
+    </div>
+</section>
+
+{% include 'store/product_modal.html' %}
+{% endblock %}
+
+{% block extra_js %}
+<script>
+const track = document.getElementById('luxury-track');
+const nextBtn = document.getElementById('luxury-next');
+const prevBtn = document.getElementById('luxury-prev');
+
+let currentIndex = 0;
+
+function updateCarousel() {
+    const slide = document.querySelector('.luxury-slide');
+    if (!slide) return;
+    const slideWidth = slide.offsetWidth + 20; 
+    track.style.transform = `translateX(-${currentIndex * slideWidth}px)`;
+}
+
+nextBtn.onclick = () => {
+    const slides = document.querySelectorAll('.luxury-slide');
+    if (currentIndex < slides.length - 4) {
+        currentIndex++;
+        updateCarousel();
+    }
+};
+
+prevBtn.onclick = () => {
+    if (currentIndex > 0) {
+        currentIndex--;
+        updateCarousel();
+    }
+};
+
+window.addEventListener('resize', updateCarousel);
+</script>
+{% include 'store/modal_js.html' %}
+{% endblock %}
